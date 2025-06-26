@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { Routes, Route } from "react-router-dom"; // Importe Routes e Route
 import AdicionarTarefas from "./components/AdicionarTarefas";
 import ListarTarefas from "./components/ListarTarefas";
+import EditarTarefa from './paginas/EditarTarefa';
 
 function App(){
   const [tarefas, setTarefas] = useState([{
@@ -51,19 +53,6 @@ function App(){
     setTarefasAuxiliar(tarefas);
   }
 
-  function onEditTaskClick(idTarefa, novoTitulo){
-    const listaDeTarefas = tarefas.map((tarefa) => {
-        if(tarefa.id === idTarefa){
-          return {...tarefa, titulo: novoTitulo};
-        }
-
-        return tarefa;
-      })
-
-      setTarefas(listaDeTarefas);
-      
-  }
-
   function onAddTaskClick(titulo){
     const novaTarefa = {
       id: tarefas.length + 1,
@@ -75,12 +64,46 @@ function App(){
     setTarefasAuxiliar([...tarefas, novaTarefa]);
   }
 
+  function changeNameTask(idTarefa, novoTitulo){
+    const novaListatarefas = tarefas.map((tarefa) => {
+      if(tarefa.id === idTarefa){
+        return {...tarefa, titulo: novoTitulo};
+      }
+      return tarefa;
+    })
+
+    setTarefas(novaListatarefas);
+    setTarefasAuxiliar(novaListatarefas);
+  }
+
   return (
     <div className = "w-screen h-screen bg-slate-700 flex justify-center p-6">
       <div className = "w-[600px] space-y-4">
         <h1 className = "text-3xl font-bold text-center text-slate-200">Gerenciador de Tarefas</h1>
-        <AdicionarTarefas  onAddTaskClick = {onAddTaskClick} />
-        <ListarTarefas tarefas  = {tarefas} tarefasAuxiliar = {tarefasAuxiliar} onTaskClick = {onTaskClick} onDeleteClick = {onDeleteClick} onEditTaskClick = {onEditTaskClick} onFilterTaskCompleted = {onFilterTaskCompleted} onFilterTaskNotCompleted = {onFilterTaskNotCompleted} onFilterAllTasks = {onFilterAllTasks} />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <AdicionarTarefas onAddTaskClick={onAddTaskClick} />
+                <ListarTarefas
+                  tarefas={tarefas}
+                  tarefasAuxiliar={tarefasAuxiliar}
+                  onTaskClick={onTaskClick}
+                  onDeleteClick={onDeleteClick}
+                  onFilterTaskCompleted={onFilterTaskCompleted}
+                  onFilterTaskNotCompleted={onFilterTaskNotCompleted}
+                  onFilterAllTasks={onFilterAllTasks}
+                />
+              </>
+            }
+          />
+          {/* Agora passamos changeNameTask como prop para EditarTarefa */}
+          <Route
+            path="/editar"
+            element={<EditarTarefa changeNameTask={changeNameTask} />}
+          />
+        </Routes>
       </div>
     </div>
     

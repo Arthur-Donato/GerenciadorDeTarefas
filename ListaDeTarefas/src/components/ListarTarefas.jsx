@@ -1,6 +1,14 @@
 import { Trash2, Pencil } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function ListarTarefas({tarefasAuxiliar, onTaskClick, onDeleteClick, onEditTaskClick, onFilterTaskCompleted, onFilterTaskNotCompleted, onFilterAllTasks}){
+    const navigate = useNavigate();
+
+    function onEditTaskClick(tarefa){
+        const query = new URLSearchParams();
+        query.set("titulo", tarefa.titulo)
+        navigate(`/editar?${query.toString()}`)
+    }
     return (
         
         <ul className = "space-y-4 p-6 bg-slate-100 rounded-md shadow space-x-0.5">
@@ -12,7 +20,7 @@ function ListarTarefas({tarefasAuxiliar, onTaskClick, onDeleteClick, onEditTaskC
                     <button onClick = {() => onTaskClick(T.id)} className = {`bg-slate-400 p-2 rounded-md w-full text-left ${T.isCompleta && "line-through"}`}>
                         {T.titulo}
                     </button>
-                    <button onClick = {() => onEditTaskClick(T.id)} className = "bg-slate-400">
+                    <button onClick = {() => onEditTaskClick(T)} className = "bg-slate-400">
                         <Pencil />
                     </button>
                     <button onClick = {() => onDeleteClick(T.id)} className = "bg-slate-400">
