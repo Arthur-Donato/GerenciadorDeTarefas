@@ -7,6 +7,7 @@ function ListarTarefas({tarefasAuxiliar, onTaskClick, onDeleteClick, onEditTaskC
     function onEditTaskClick(tarefa){
         const query = new URLSearchParams();
         query.set("titulo", tarefa.titulo)
+        query.set("id", tarefa.id)
         navigate(`/editar?${query.toString()}`)
     }
     return (

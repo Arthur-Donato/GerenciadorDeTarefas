@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-function EditarTarefa({changeNameTask}){
+function EditarTarefa({changeNameTask, tarefas}){
     const [searchParams] = useSearchParams();
     const tituloAntigo = searchParams.get("titulo");
     const idTarefa = searchParams.get("id"); 
@@ -27,14 +27,14 @@ function EditarTarefa({changeNameTask}){
                         if(!novoTitulo.trim()){
                             return alert("Preencha o nome da nova tarefa!");
                         }
-                        
                         changeNameTask(idTarefa, novoTitulo);
                         setNovoTitulo("");
-                        console.log({novoTitulo});
                         navigate(`/`);
+                        
                         
                     }}
                         className = "bg-slate-400 text-white font-medium px-4 py-2 rounded-md">Confirmar</button>
+                    <button onClick={() => navigate(`/`)} className="bg-slate-400 text-white font-medium px-4 py-2 rounded-md">Voltar</button>
                 </div>
             </div>
             
