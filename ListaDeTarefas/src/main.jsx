@@ -1,101 +1,45 @@
 // main.jsx
-import { StrictMode, useEffect, useState } from 'react';
+import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import App from './App.jsx';cial
+import App from './App.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import EditarTarefa from './paginas/EditarTarefa.jsx';
 
+import { Provider } from 'react-redux'; 
+import store from './store'; 
+import { useSelector } from 'react-redux'; 
+
 function Root() {
-  const [tarefas, setTarefas] = useState(JSON.parse(localStorage.getItem("tarefas")) || []);
+  const allTasks = useSelector((state) => state.tasks.list);
 
   useEffect(() => {
-    localStorage.setItem("tarefas", JSON.stringify(tarefas))
-  }, [tarefas])
-
-  const [tarefasAuxiliar, setTarefasAuxiliar] = useState(tarefas);
-
-  function onTaskClick(idTarefa) {
-    const novaListaTarefas = tarefas.map((tarefa) => {
-      if (tarefa.id === idTarefa) {
-        return { ...tarefa, isCompleta: !tarefa.isCompleta };
-      }
-      return tarefa;
-    });
-    setTarefas(novaListaTarefas);
-    setTarefasAuxiliar(novaListaTarefas);
-  }
-
-  function onDeleteClick(idTarefa) {
-    const novaListaTarefas = tarefas.filter((tarefa) => tarefa.id !== idTarefa);
-    setTarefas(novaListaTarefas);
-    setTarefasAuxiliar(novaListaTarefas);
-  }
-
-  function onFilterTaskCompleted() {
-    const listaTarefasConcluidas = tarefas.filter((tarefa) => tarefa.isCompleta);
-    setTarefasAuxiliar(listaTarefasConcluidas);
-  }
-
-  function onFilterTaskNotCompleted() {
-    const listaTrefasNaoConcluidas = tarefas.filter((tarefa) => !tarefa.isCompleta);
-    setTarefasAuxiliar(listaTrefasNaoConcluidas);
-  }
-
-  function onFilterAllTasks() {
-    setTarefasAuxiliar(tarefas);
-  }
-
-  function onAddTaskClick(titulo) {
-    const novaTarefa = {
-      id: tarefas.length > 0 ? Math.max(...tarefas.map(t => t.id)) + 1 : 1,
-      titulo,
-      isCompleta: false,
-    };
-    setTarefas([...tarefas, novaTarefa]);
-    setTarefasAuxiliar([...tarefas, novaTarefa]);
-  }
-
-  function changeNameTask(idTarefa, novoTitulo) {
-    const novaListaTarefas = tarefas.map((tarefa) => {
-      if (tarefa.id === Number(idTarefa)) {
-        console.log("Editando o titulo da tarefa")
-        return{...tarefa, titulo: novoTitulo};
-      }
-      return tarefa;
-    });
-    setTarefas(novaListaTarefas);
-    setTarefasAuxiliar(novaListaTarefas);
-    
-  }
+    localStorage.setItem("tarefas", JSON.stringify(allTasks));
+  }, [allTasks]); 
 
   const router = createBrowserRouter([
     {
       path: "/",
       element: (
-        <App
-          tarefas={tarefas}
-          tarefasAuxiliar={tarefasAuxiliar}
-          onTaskClick={onTaskClick}
-          onDeleteClick={onDeleteClick}
-          onFilterTaskCompleted={onFilterTaskCompleted}
-          onFilterTaskNotCompleted={onFilterTaskNotCompleted}
-          onFilterAllTasks={onFilterAllTasks}
-          onAddTaskClick={onAddTaskClick}
-        />
+        <App/>
       ),
     },
     {
       path: "/editar",
-      element: <EditarTarefa tarefas={tarefas} changeNameTask={changeNameTask} />,
+      element: (
+        <EditarTarefa/>
+      ),
     },
   ]);
 
-  return <RouterProvider  router={router} />;
+  return <RouterProvider router={router} />;
 }
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Root /> {}
+    {}
+    <Provider store={store}>
+      <Root />
+    </Provider>
   </StrictMode>,
 );
